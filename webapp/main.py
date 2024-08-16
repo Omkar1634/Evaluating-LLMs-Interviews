@@ -5,7 +5,6 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 from PIL import Image
 from pymongo.server_api import ServerApi
-import urllib.parse
 
 # client = MongoClient("mongodb://localhost:27017/")
 # db = client['llm_database']
