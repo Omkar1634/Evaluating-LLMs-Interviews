@@ -234,7 +234,7 @@ def aggregate_data():
 # Function for the Main Page
 def main_page():
     st.title("Evaluating LLMs in Interviews: Key Benchmarks and Model Capabilities")
-    image1 = Image.open("D:/Bechmark/asset/1.png")
+    image1 = Image.open("asset/1.png")
     st.image(image=image1)
     st.header("Abstract")
     st.markdown(""" 
@@ -277,7 +277,7 @@ def main_page():
         """, unsafe_allow_html=True)
     
     st.subheader("Example:")
-    image = Image.open("D:/Bechmark/asset/eg.png")  
+    image = Image.open("asset/eg.png")  
     st.image(image=image)  
             
 
