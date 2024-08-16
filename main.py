@@ -11,7 +11,7 @@ from pymongo.server_api import ServerApi
 # collection = db['contributions']
 
 
-mango_uri = st.secrets['mongodb_url']
+mango_uri = "mongodb+srv://llmdatabase:llmdatabase@cluster0.whcpxvq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 # Create a new client and connect to the server
 
