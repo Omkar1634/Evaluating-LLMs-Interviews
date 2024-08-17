@@ -72,6 +72,7 @@ def clear_form():
 
 def contribution():
     st.header("Contribution")
+    st.write("Note: Do not copy questions from other sources like ChatGPT,Claude,etc. Each QA should be uniquely crafted.")
     
     expertise = st.selectbox('Expertise', ['Professor', 'Professional','Student'])
 
@@ -359,7 +360,7 @@ def app():
     # Set the session state selection based on user input
     if selection != st.session_state.selection:
         st.session_state.selection = selection
-        st.experimental_rerun()
+        st.rerun()
 
     # Display content based on selection
     if st.session_state.selection == "About":
