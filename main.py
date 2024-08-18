@@ -333,7 +333,7 @@ def main_page():
         st.subheader("Academia:")
         st.markdown(""" 
         <div style="text-align: justify;">
-                <h4> Dr Katerina Bourazeri <br> Lecture, University of Essex </h4>
+                <h4> Dr Katerina Bourazeri <br> Lecturer , University of Essex </h4>
         </div>
         """, unsafe_allow_html=True)
 
