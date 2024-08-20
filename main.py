@@ -85,7 +85,7 @@ def main_page():
             This benchmark evaluates how well an LLM can handle the diverse types of questions typically encountered in job interviews, which require a mix of technical expertise, problem-solving abilities, soft skills, and situational judgment.      
         </div>
         """, unsafe_allow_html=True)
-
+    
     aggregate_data()
 
     st.header("Contribution")
