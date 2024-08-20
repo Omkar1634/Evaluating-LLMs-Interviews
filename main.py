@@ -240,12 +240,21 @@ def main_page():
     st.header("Abstract")
     st.markdown(""" 
         <div style="text-align: justify;">
-            The aim of the project is to develop a State-of-the-Art Benchmarks for evaluating the LLMs models. 
-            Models are benchmarked based on their capabilities, such as coding, common sense and reasoning. 
-            Other capabilities encompass natural language processing, including machine translation, question answering, and text summarization. 
-            LLM benchmarks play a crucial role in developing and enhancing models. 
-            Benchmarks showcase the progress of an LLM as it learns, with quantitative measures that highlight where the model excels and its areas for improvement. 
-            LLM benchmarks also provide an objective comparison of different models, helping inform software developers and organizations as they choose which models better suit their needs.
+            The aim of this project is to develop state-of-the-art benchmarks for evaluating large language models (LLMs). 
+            These benchmarks are designed to assess LLMs based on a wide range of capabilities, including technical knowledge, common sense, reasoning, and natural language processing.
+            A key focus of the project is on creating a tailored Question Answering benchmark specifically for interview scenarios. 
+            This benchmark evaluates how well an LLM can handle the diverse types of questions typically encountered in job interviews, which require a mix of technical expertise, problem-solving abilities, soft skills, and situational judgment.
+            The benchmark is structured to cover various categories of interview questions:   
+            <ul style="list-style-position: inside;">
+                <li>Technical Knowledge: Assessing the model's ability to solve domain-specific problems, such as coding challenges for software engineers or financial analysis tasks for accountants.</li>
+                <li>Behavioral Questions: Evaluating the model’s capacity to articulate responses based on past experiences and specific situations, such as overcoming challenges or managing team dynamics.</li>
+                <li>Situational Judgment: Testing the model's decision-making and problem-solving skills through hypothetical scenarios, such as resolving workplace conflicts.</li>
+                <li>Soft Skills Assessment: Measuring the model’s proficiency in communication, teamwork, leadership, and other interpersonal skills.</li>
+                <li>General Knowledge and Company Fit: Understanding the model's ability to reflect a candidate’s alignment with company values and overall suitability for the role.</li>
+            </ul>  
+             Additionally, these benchmarks offer a valuable tool for learners using LLMs, enabling them to compare the original, human-generated answers with those produced by the model. 
+            Our primary goal is to assess the similarity between these answers, helping users understand the model's strengths and areas where it may diverge from human reasoning or expertise. 
+            This comparison not only aids in learning but also provides insights into how effectively LLMs can emulate human responses in real-world scenarios. 
         </div>
         """, unsafe_allow_html=True)
 
@@ -322,18 +331,21 @@ def main_page():
         st.header("Researcher")
         st.markdown(""" 
         <div style="text-align: justify;">
-            <h4> Omkar R Kharkar <br>
-            AI & NLP Engineer </h4>
+            <ul style="list-style-position: inside;">
+                <li>Omkar  R  Kharkar</li>
+                <li>Dhanesh Kapadia</li>
+            </ul>
         </div>
         """, unsafe_allow_html=True)
         
 
     with col2:
         st.header("Research Advisor")
-        st.subheader("Academia:")
         st.markdown(""" 
         <div style="text-align: justify;">
-                <h4> Dr Katerina Bourazeri <br> Lecturer , University of Essex </h4>
+                    <ul style="list-style-position: inside;">
+                <li>Dr. Katerina Bourazeri <br> Lecturer , University of Essex</li>
+            </ul>
         </div>
         """, unsafe_allow_html=True)
 
