@@ -22,6 +22,8 @@ collection = db['contributions']
 
 
 
+import streamlit as st
+from PIL import Image
 
 # Initialize session state for form inputs
 if 'student_name' not in st.session_state:
@@ -58,7 +60,7 @@ def clear_form():
     st.session_state.student_area = ''
     st.session_state.student_question = ''
     st.session_state.student_answer = ''
-    # professor
+    # Professor
     st.session_state.professor_name = ''
     st.session_state.professor_area = ''
     st.session_state.professor_question = ''
@@ -70,11 +72,26 @@ def clear_form():
     st.session_state.professional_answer = ''
     st.session_state.submitted = True
 
-def contribution():
+def main_page():
+    st.title("Evaluating LLMs in Interviews: Key Benchmarks and Model Capabilities")
+    image1 = Image.open("asset/1.png")
+    st.image(image=image1)
+    st.header("Abstract")
+    st.markdown(""" 
+        <div style="text-align: justify;">
+            The aim of this project is to develop state-of-the-art benchmarks for evaluating large language models (LLMs). 
+            These benchmarks are designed to assess LLMs based on a wide range of capabilities, including technical knowledge, common sense, reasoning, and natural language processing.
+            A key focus of the project is on creating a tailored Question Answering benchmark specifically for interview scenarios. 
+            This benchmark evaluates how well an LLM can handle the diverse types of questions typically encountered in job interviews, which require a mix of technical expertise, problem-solving abilities, soft skills, and situational judgment.      
+        </div>
+        """, unsafe_allow_html=True)
+
+    aggregate_data()
+
     st.header("Contribution")
-    st.write("Note: Do not copy questions from other sources like ChatGPT,Claude,etc. Each QA should be uniquely crafted.")
-    
-    expertise = st.selectbox('Expertise', ['Professor', 'Professional','Student'])
+    st.write("Note: Do not copy questions from other sources like ChatGPT, Claude, etc. Each QA should be uniquely crafted.")
+
+    expertise = st.selectbox('Expertise', ['Professor', 'Professional', 'Student'])
 
     if expertise == 'Professor':
         professor()
@@ -102,7 +119,6 @@ def student():
     )
 
     if st.button("Submit"):
-        # Save to MongoDB
         save_to_mongo({
             'name': st.session_state.student_name,
             'expertise': 'Student',
@@ -112,9 +128,7 @@ def student():
         })
         st.success("Your question and answer have been saved!")
         clear_form()
-        st.rerun()  # Force a rerun to clear the form
-
-
+        st.rerun()
 
 def professor():
     st.session_state.professor_name = st.text_input(
@@ -135,7 +149,6 @@ def professor():
     )
 
     if st.button("Submit"):
-        # Save to MongoDB
         save_to_mongo({
             'name': st.session_state.professor_name,
             'expertise': 'Professor',
@@ -145,7 +158,7 @@ def professor():
         })
         st.success("Your question and answer have been saved!")
         clear_form()
-        st.rerun()  # Force a rerun to clear the form
+        st.rerun()
 
 def professional():
     st.session_state.professional_name = st.text_input(
@@ -166,7 +179,6 @@ def professional():
     )
 
     if st.button("Submit"):
-        # Save to MongoDB
         save_to_mongo({
             'name': st.session_state.professional_name,
             'expertise': 'Professional',
@@ -176,215 +188,50 @@ def professional():
         })
         st.success("Your question and answer have been saved!")
         clear_form()
-        st.rerun()  # Force a rerun to clear the form
-
-
+        st.rerun()
 
 def save_to_mongo(data):
     """Insert the data into the MongoDB collection."""
     collection.insert_one(data)
 
-
 def aggregate_data():
     """Query the MongoDB collection to get all documents and aggregate the data."""
     data = list(collection.find({}))
-    
     df = pd.DataFrame(data)
 
-
     if not df.empty:
-            # Correctly count the number of questions for each area (field)
-            aggregated_df = df.groupby('area').agg(
-                num_questions=('question', 'count')  # Count the number of questions
-            ).reset_index()
+        aggregated_df = df.groupby('area').agg(
+            num_questions=('question', 'count')
+        ).reset_index()
 
-            # Capitalize the first letter of each word in the 'area' column
-            aggregated_df['Field'] = aggregated_df['area'].str.title()
+        aggregated_df['Field'] = aggregated_df['area'].str.title()
 
-            # Rename 'num_questions' to 'Dataset Strength'
-            aggregated_df.rename(columns={'num_questions': 'Dataset Strength'}, inplace=True)
+        aggregated_df.rename(columns={'num_questions': 'Dataset Strength'}, inplace=True)
 
-            # Calculate Progress as a percentage of the total
-            total_strength = aggregated_df['Dataset Strength'].sum()
-            aggregated_df['Progress'] = (aggregated_df['Dataset Strength'] / total_strength) * 100
-            #aggregated_df['Progress'] = aggregated_df['Progress'].round(2)  # Round to 2 decimal places
+        total_strength = aggregated_df['Dataset Strength'].sum()
+        aggregated_df['Progress'] = (aggregated_df['Dataset Strength'] / total_strength) * 100
 
-            # Display the DataFrame with a properly formatted ProgressColumn
-            st.dataframe(
-                aggregated_df[['Field', 'Dataset Strength', 'Progress']],
-                column_config={
-                    "Progress": st.column_config.ProgressColumn(
-                        "Progress",
-                        format="%.1f%%",  # Format with percentage symbol
-                        min_value=0,
-                        max_value=100,
-                    ),
-                },
-                use_container_width=True  # Adjust width if needed
-            )
+        st.dataframe(
+            aggregated_df[['Field', 'Dataset Strength', 'Progress']],
+            column_config={
+                "Progress": st.column_config.ProgressColumn(
+                    "Progress",
+                    format="%.1f%%",
+                    min_value=0,
+                    max_value=100,
+                ),
+            },
+            use_container_width=True
+        )
 
-            return aggregated_df
+        return aggregated_df
     else:
-            st.write("No data available to display.")
-            return pd.DataFrame()
-
-
-   
-
-
-# Function for the Main Page
-def main_page():
-    st.title("Evaluating LLMs in Interviews: Key Benchmarks and Model Capabilities")
-    image1 = Image.open("asset/1.png")
-    st.image(image=image1)
-    st.header("Abstract")
-    st.markdown(""" 
-        <div style="text-align: justify;">
-            The aim of this project is to develop state-of-the-art benchmarks for evaluating large language models (LLMs). 
-            These benchmarks are designed to assess LLMs based on a wide range of capabilities, including technical knowledge, common sense, reasoning, and natural language processing.
-            A key focus of the project is on creating a tailored Question Answering benchmark specifically for interview scenarios. 
-            This benchmark evaluates how well an LLM can handle the diverse types of questions typically encountered in job interviews, which require a mix of technical expertise, problem-solving abilities, soft skills, and situational judgment.
-            The benchmark is structured to cover various categories of interview questions:   
-            <ul style="list-style-position: inside;">
-                <li>Technical Knowledge: Assessing the model's ability to solve domain-specific problems, such as coding challenges for software engineers or financial analysis tasks for accountants.</li>
-                <li>Behavioral Questions: Evaluating the model’s capacity to articulate responses based on past experiences and specific situations, such as overcoming challenges or managing team dynamics.</li>
-                <li>Situational Judgment: Testing the model's decision-making and problem-solving skills through hypothetical scenarios, such as resolving workplace conflicts.</li>
-                <li>Soft Skills Assessment: Measuring the model’s proficiency in communication, teamwork, leadership, and other interpersonal skills.</li>
-                <li>General Knowledge and Company Fit: Understanding the model's ability to reflect a candidate’s alignment with company values and overall suitability for the role.</li>
-            </ul>  
-             Additionally, these benchmarks offer a valuable tool for learners using LLMs, enabling them to compare the original, human-generated answers with those produced by the model. 
-            Our primary goal is to assess the similarity between these answers, helping users understand the model's strengths and areas where it may diverge from human reasoning or expertise. 
-            This comparison not only aids in learning but also provides insights into how effectively LLMs can emulate human responses in real-world scenarios. 
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.header("Motivation")
-    st.markdown("""
-        <div style="text-align: justify;">
-            In the rapidly evolving field of artificial intelligence, large language models (LLMs) are becoming increasingly integral to various applications, from coding assistance to natural language processing tasks like translation and summarization.
-            As these models grow more sophisticated, it is crucial to have a robust framework for evaluating their capabilities, particularly in high-stakes scenarios such as interviews. <br><br>
-            The title "Evaluating LLMs in Interviews: Key Benchmarks and Model Capabilities" reflects the importance of systematic assessment in ensuring that LLMs meet the specific demands of real-world applications. 
-            By establishing and utilizing key benchmarks, interviewers can objectively measure the strengths and weaknesses of different models, leading to more informed decisions.  <br><br>
-            This approach not only helps identify the most suitable models for specific tasks but also drives the continued improvement of LLMs, ensuring that they evolve to meet the ever-growing expectations of users and developers alike.
-            In essence, this title underscores the critical role of benchmarks in the interview process, guiding the selection of LLMs that are not only proficient but also well-matched to the nuanced requirements of diverse applications.
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.header("Guidelines")
-    st.subheader("How you should frame the question:")
-    st.markdown(""" 
-        <div style="text-align: justify;">
-            <ul style="list-style-position: inside;">
-                <li>Focus on Relevant and Specific Content.</li>
-                <li>Avoid Controversial or Political Topics.</li>
-                <li>Cultural and Context-Specific Questions.</li>
-                <li>Incorporate Negations.</li>
-                <li>Use Complete, Native Language Questions.</li>
-                <li>Ensure Originality.</li>
-                <li>Avoid Personal Bias and Subjectivity</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.subheader("Example:")
-    image = Image.open("asset/eg.png")  
-    st.image(image=image)  
-            
-
-    st.header("Goals and Milestones")
-    st.subheader("Goals:")
-    st.markdown(""" 
-        <div style="text-align: justify;">
-            <ul style="list-style-position: inside;">
-                <li>Develop a state-of-the-art LLMs Benchmark for Interview.</li>
-                <li>Develop a Comprehensive Benchmarking Framework.</li>
-                <li>Establish Objective Evaluation Criteria.</li>
-                <li>Optimize Interview Processes.</li>
-                <li>Enhance LLM Capabilities Through Feedback.</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.subheader("Milestones:")
-    st.markdown(""" 
-        <div style="text-align: justify;">
-            <ul style="list-style-position: inside;">
-                <li>Milestone 1: Initial research and dataset collection.</li>
-                <li>Milestone 2: Model benchmarking and preliminary testing.</li>
-                <li>Milestone 3: Dataset Release and Feedback.</li>
-                <li>Milestone 4: Final evaluation and publication.</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-    
-
-    st.subheader("For Contribution, you can click the button below:")
-    if st.button("Go to Contribution"):
-            st.session_state.selection = "Contribution"
-            st.rerun()
-
-
-
-    col1,col2 = st.columns([1,1])
-
-    with col1:
-        st.header("Researcher")
-        st.markdown(""" 
-        <div style="text-align: justify;">
-            <ul style="list-style-position: inside;">
-                <li>Omkar  R  Kharkar</li>
-                <li>Dhanesh Kapadia</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-        
-
-    with col2:
-        st.header("Research Advisor")
-        st.markdown(""" 
-        <div style="text-align: justify;">
-                    <ul style="list-style-position: inside;">
-                <li>Dr. Katerina Bourazeri <br> Lecturer , University of Essex</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-
-    
-    aggregate_data()
-    
-      
-    
-
-# Main app function with navigation
-def app():
-    
-    st.sidebar.title("LLM Interview Benchmarks")
-    
-
-    # Use session state to keep track of the selected page
-    if "selection" not in st.session_state:
-        st.session_state.selection = "About"
-
-    # Sidebar selection box for navigation
-    selection = st.sidebar.selectbox("Navigation", ["About","Contribution"], index=["About","Contribution"].index(st.session_state.selection))
-
-    
-    # Set the session state selection based on user input
-    if selection != st.session_state.selection:
-        st.session_state.selection = selection
-        st.rerun()
-
-    # Display content based on selection
-    if st.session_state.selection == "About":
-        main_page()
-        
-    elif st.session_state.selection == "Contribution":
-        contribution()
-
+        st.write("No data available to display.")
+        return pd.DataFrame()
 
 # Run the app
 if __name__ == "__main__":
-    app()
+    main_page()
 
 
 
@@ -392,10 +239,42 @@ if __name__ == "__main__":
 
 
 
+    # col1,col2 = st.columns([1,1])
+
+    # with col1:
+    #     st.header("Researcher")
+    #     st.markdown(""" 
+    #     <div style="text-align: justify;">
+    #         <ul style="list-style-position: inside;">
+    #             <li>Omkar  R  Kharkar</li>
+    #             <li>Dhanesh Kapadia</li>
+    #         </ul>
+    #     </div>
+    #     """, unsafe_allow_html=True)
+        
+
+    # with col2:
+    #     st.header("Research Advisor")
+    #     st.markdown(""" 
+    #     <div style="text-align: justify;">
+    #                 <ul style="list-style-position: inside;">
+    #             <li>Dr. Katerina Bourazeri <br> Lecturer , University of Essex</li>
+    #         </ul>
+    #     </div>
+    #     """, unsafe_allow_html=True)
 
 
-
-#def guidelines_page():
+# <ul style="list-style-position: inside;">
+#                 <li>Technical Knowledge: Assessing the model's ability to solve domain-specific problems, such as coding challenges for software engineers or financial analysis tasks for accountants.</li>
+#                 <li>Behavioral Questions: Evaluating the model’s capacity to articulate responses based on past experiences and specific situations, such as overcoming challenges or managing team dynamics.</li>
+#                 <li>Situational Judgment: Testing the model's decision-making and problem-solving skills through hypothetical scenarios, such as resolving workplace conflicts.</li>
+#                 <li>Soft Skills Assessment: Measuring the model’s proficiency in communication, teamwork, leadership, and other interpersonal skills.</li>
+#                 <li>General Knowledge and Company Fit: Understanding the model's ability to reflect a candidate’s alignment with company values and overall suitability for the role.</li>
+#             </ul>  
+#              Additionally, these benchmarks offer a valuable tool for learners using LLMs, enabling them to compare the original, human-generated answers with those produced by the model. 
+#             Our primary goal is to assess the similarity between these answers, helping users understand the model's strengths and areas where it may diverge from human reasoning or expertise. 
+#             This comparison not only aids in learning but also provides insights into how effectively LLMs can emulate human responses in real-world scenarios. 
+# #def guidelines_page():
 #     st.header("Guidelines")
 #     st.write("We expect you to follow these guidelines when contributing to this project.")
 #     st.subheader("1. How you should frame the question:")
@@ -448,3 +327,61 @@ if __name__ == "__main__":
 #     - **Suggestion:** Stick to factual or process-oriented questions, such as "Is the ability to explain outputs not important when evaluating an LLM?"
 #     """)
 #     st.subheader("2. Examples  ")
+    # st.header("Goals and Milestones")
+    # st.subheader("Goals:")
+    # st.markdown(""" 
+    #     <div style="text-align: justify;">
+    #         <ul style="list-style-position: inside;">
+    #             <li>Develop a state-of-the-art LLMs Benchmark for Interview.</li>
+    #             <li>Develop a Comprehensive Benchmarking Framework.</li>
+    #             <li>Establish Objective Evaluation Criteria.</li>
+    #             <li>Optimize Interview Processes.</li>
+    #             <li>Enhance LLM Capabilities Through Feedback.</li>
+    #         </ul>
+    #     </div>
+    #     """, unsafe_allow_html=True)
+
+    # st.subheader("Milestones:")
+    # st.markdown(""" 
+    #     <div style="text-align: justify;">
+    #         <ul style="list-style-position: inside;">
+    #             <li>Milestone 1: Initial research and dataset collection.</li>
+    #             <li>Milestone 2: Model benchmarking and preliminary testing.</li>
+    #             <li>Milestone 3: Dataset Release and Feedback.</li>
+    #             <li>Milestone 4: Final evaluation and publication.</li>
+    #         </ul>
+    #     </div>
+    #     """, unsafe_allow_html=True)
+    # st.header("Motivation")
+    # st.markdown("""
+    #     <div style="text-align: justify;">
+    #         In the rapidly evolving field of artificial intelligence, large language models (LLMs) are becoming increasingly integral to various applications, from coding assistance to natural language processing tasks like translation and summarization.
+    #         As these models grow more sophisticated, it is crucial to have a robust framework for evaluating their capabilities, particularly in high-stakes scenarios such as interviews. <br><br>
+    #         The title "Evaluating LLMs in Interviews: Key Benchmarks and Model Capabilities" reflects the importance of systematic assessment in ensuring that LLMs meet the specific demands of real-world applications. 
+    #         By establishing and utilizing key benchmarks, interviewers can objectively measure the strengths and weaknesses of different models, leading to more informed decisions.  <br><br>
+    #         This approach not only helps identify the most suitable models for specific tasks but also drives the continued improvement of LLMs, ensuring that they evolve to meet the ever-growing expectations of users and developers alike.
+    #         In essence, this title underscores the critical role of benchmarks in the interview process, guiding the selection of LLMs that are not only proficient but also well-matched to the nuanced requirements of diverse applications.
+    #     </div>
+    #     """, unsafe_allow_html=True)
+    
+    # st.header("Guidelines")
+    # st.subheader("How you should frame the question:")
+    # st.markdown(""" 
+    #     <div style="text-align: justify;">
+    #         <ul style="list-style-position: inside;">
+    #             <li>Focus on Relevant and Specific Content.</li>
+    #             <li>Avoid Controversial or Political Topics.</li>
+    #             <li>Cultural and Context-Specific Questions.</li>
+    #             <li>Incorporate Negations.</li>
+    #             <li>Use Complete, Native Language Questions.</li>
+    #             <li>Ensure Originality.</li>
+    #             <li>Avoid Personal Bias and Subjectivity</li>
+    #         </ul>
+    #     </div>
+    #     """, unsafe_allow_html=True)
+
+       
+    # st.subheader("Example:")
+    # image = Image.open("asset/eg.png")  
+    # st.image(image=image)  
+            
