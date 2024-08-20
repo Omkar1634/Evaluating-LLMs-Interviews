@@ -56,7 +56,7 @@ link: https://evaluating-llms-interviews.onrender.com/
 ### Researcher
 
 **Omkar R Kharkar**  
-**Dhanesh Kapadia**
+**Dhanesh Kapadia** <br>
 **Vivek Unni**
 
 ### Research Advisor
