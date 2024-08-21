@@ -49,14 +49,15 @@ This approach not only helps identify the most suitable models for specific task
 
 For Contribution, you can click the button below:
 
-[Go to Contribution](#)
+link: https://evaluating-llms-interviews.onrender.com/
 
 ## Team
 
 ### Researcher
 
 **Omkar R Kharkar**  
-_AI & NLP Engineer_
+**Dhanesh Kapadia** <br>
+**Vivek Unni**
 
 ### Research Advisor
 
