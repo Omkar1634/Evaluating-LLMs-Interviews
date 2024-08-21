@@ -119,16 +119,19 @@ def student():
     )
 
     if st.button("Submit"):
-        save_to_mongo({
-            'name': st.session_state.student_name,
-            'expertise': 'Student',
-            'area': st.session_state.student_area,
-            'question': st.session_state.student_question,
-            'answer': st.session_state.student_answer
-        })
-        st.success("Your question and answer have been saved!")
-        clear_form()
-        st.rerun()
+        if not st.session_state.student_name or not st.session_state.student_area or not st.session_state.student_question or not st.session_state.student_answer:
+            st.error("All fields are required. Please fill out every field before submitting.")
+        else:
+            save_to_mongo({
+                'name': st.session_state.student_name,
+                'expertise': 'Student',
+                'area': st.session_state.student_area,
+                'question': st.session_state.student_question,
+                'answer': st.session_state.student_answer
+            })
+            st.success("Your question and answer have been saved!")
+            clear_form()
+            st.rerun()
 
 def professor():
     st.session_state.professor_name = st.text_input(
@@ -149,16 +152,19 @@ def professor():
     )
 
     if st.button("Submit"):
-        save_to_mongo({
-            'name': st.session_state.professor_name,
-            'expertise': 'Professor',
-            'area': st.session_state.professor_area,
-            'question': st.session_state.professor_question,
-            'answer': st.session_state.professor_answer
-        })
-        st.success("Your question and answer have been saved!")
-        clear_form()
-        st.rerun()
+        if not st.session_state.professor_name or not st.session_state.professor_area or not st.session_state.professor_question or not st.session_state.professor_answer:
+            st.error("All fields are required. Please fill out every field before submitting.")
+        else:
+            save_to_mongo({
+                'name': st.session_state.professor_name,
+                'expertise': 'Professor',
+                'area': st.session_state.professor_area,
+                'question': st.session_state.professor_question,
+                'answer': st.session_state.professor_answer
+            })
+            st.success("Your question and answer have been saved!")
+            clear_form()
+            st.rerun()
 
 def professional():
     st.session_state.professional_name = st.text_input(
@@ -179,16 +185,19 @@ def professional():
     )
 
     if st.button("Submit"):
-        save_to_mongo({
-            'name': st.session_state.professional_name,
-            'expertise': 'Professional',
-            'area': st.session_state.professional_area,
-            'question': st.session_state.professional_question,
-            'answer': st.session_state.professional_answer
-        })
-        st.success("Your question and answer have been saved!")
-        clear_form()
-        st.rerun()
+        if not st.session_state.professional_name or not st.session_state.professional_area or not st.session_state.professional_question or not st.session_state.professional_answer:
+            st.error("All fields are required. Please fill out every field before submitting.")
+        else:
+            save_to_mongo({
+                'name': st.session_state.professional_name,
+                'expertise': 'Professional',
+                'area': st.session_state.professional_area,
+                'question': st.session_state.professional_question,
+                'answer': st.session_state.professional_answer
+            })
+            st.success("Your question and answer have been saved!")
+            clear_form()
+            st.rerun()
 
 def save_to_mongo(data):
     """Insert the data into the MongoDB collection."""
