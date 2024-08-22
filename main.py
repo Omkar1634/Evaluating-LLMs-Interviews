@@ -86,7 +86,7 @@ def main_page():
         </div>
         """, unsafe_allow_html=True)
     
-    aggregate_data()
+    
 
     st.header("Contribution")
     st.write("Note: Do not copy questions from other sources like ChatGPT, Claude, etc. Each QA should be uniquely crafted.")
@@ -99,6 +99,34 @@ def main_page():
         professional()
     elif expertise == 'Student':
         student()
+
+    col1,col2 = st.columns([1,1])
+
+    with col1:
+        st.header("Researcher")
+        st.markdown(""" 
+        <div style="text-align: justify;">
+            <ul style="list-style-position: inside;">
+                <li> Omkar  R  Kharkar</li>
+                <li> Dhanesh Kapadia</li>
+                <li> Shikhar Sharma </li>
+                <li> Vivek Unni </li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+
+    with col2:
+        st.header("Research Advisor")
+        st.markdown(""" 
+        <div style="text-align: justify;">
+                    <ul style="list-style-position: inside;">
+                <li>Dr. Katerina Bourazeri <br> Lecturer , University of Essex</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    aggregate_data()
 
 def student():
     st.session_state.student_name = st.text_input(
